@@ -1,0 +1,277 @@
+@import "tailwindcss";
+@import "shadcn/tailwind.css";
+
+/* The site is dark-only by design; `dark:` utilities from shadcn always apply. */
+@custom-variant dark (&:where(html, html *));
+
+:root {
+  color-scheme: dark;
+
+  /* Ashwright palette (brand system, 2026). Ink and Paper carry the layout; color is the spark. */
+  --ink: #0a0a0a;
+  --paper: #fafafa;
+  --coral: #f16375;
+  --orange: #fb8629;
+  --brand-gradient: linear-gradient(90deg, var(--coral), var(--orange));
+
+  /* Surfaces */
+  --background: var(--ink);
+  --surface: #121212;
+  --surface-2: #181818;
+  --surface-3: #202020;
+
+  /* Lines */
+  --line: rgb(255 255 255 / 0.08);
+  --line-strong: rgb(255 255 255 / 0.14);
+
+  /* Text */
+  --foreground: var(--paper);
+  --muted-foreground: #a3a3a3;
+  --subtle-foreground: #858585;
+
+  /* Brand accent. Text on accents is always Ink (white on orange fails contrast). */
+  --brand: var(--orange);
+  --brand-strong: #fc9a4d;
+  --brand-foreground: var(--ink);
+
+  /* Status colors, kept distinct from the brand: green = passed, yellow and red = severity. */
+  --success: #22c55e;
+  --warn: #facc15;
+  --danger: #ef4444;
+  /* Lighter red for small text on red-tinted backgrounds (keeps WCAG AA). */
+  --danger-strong: #f87171;
+
+  /* shadcn tokens mapped onto the system */
+  --card: var(--surface);
+  --card-foreground: var(--foreground);
+  --popover: var(--surface);
+  --popover-foreground: var(--foreground);
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--foreground);
+  --muted: var(--surface-2);
+  --accent: var(--surface-2);
+  --accent-foreground: var(--foreground);
+  --destructive: var(--danger);
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: rgb(251 134 41 / 0.6);
+  --radius: 0.75rem;
+
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle-foreground: var(--subtle-foreground);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-coral: var(--coral);
+  --color-orange: var(--orange);
+  --color-success: var(--success);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
+  --color-danger-strong: var(--danger-strong);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-heading: var(--font-sans);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+
+  --ease-out-expo: var(--ease-out-expo);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply scroll-smooth;
+    scroll-padding-top: 5rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: rgb(241 99 117 / 0.35);
+    color: var(--foreground);
+  }
+  :focus-visible {
+    outline: 2px solid var(--brand-strong);
+    outline-offset: 2px;
+  }
+}
+
+/* ─── Components ──────────────────────────────────────────────────────── */
+
+@utility container-page {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 72rem;
+  padding-inline: 1rem;
+  @media (width >= 40rem) {
+    padding-inline: 1.5rem;
+  }
+}
+
+/* Elevated card: thin border, faint top-edge highlight, brightens on hover. */
+@utility surface-card {
+  position: relative;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--line);
+  background-color: var(--surface);
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 0.05),
+    0 1px 2px 0 rgb(0 0 0 / 0.4);
+  transition: border-color 200ms var(--ease-out-expo);
+}
+
+/* Signature Coral → Orange gradient. */
+@utility bg-brand-gradient {
+  background-image: var(--brand-gradient);
+}
+
+@utility text-brand-gradient {
+  background-image: var(--brand-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Brand labels: IBM Plex Mono, capitals, spaced 0.2em. */
+@utility label-caps {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+@utility surface-card-hover {
+  &:hover {
+    border-color: var(--line-strong);
+  }
+}
+
+/* Faint grid that fades out from the center. */
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 75%);
+}
+
+@utility bg-dots {
+  background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px);
+  background-size: 20px 20px;
+  mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, #000 20%, transparent 70%);
+}
+
+@utility text-balance-safe {
+  text-wrap: balance;
+}
+
+/* Headline words reveal in sequence. Pure CSS so it runs before hydration (LCP-friendly). */
+@keyframes word-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.35em, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility animate-word {
+  display: inline-block;
+  opacity: 0;
+  animation: word-in 0.7s var(--ease-out-expo) forwards;
+  animation-delay: calc(var(--i, 0) * 60ms + 80ms);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility animate-fade-up {
+  opacity: 0;
+  animation: fade-up 0.6s var(--ease-out-expo) forwards;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+@utility animate-caret {
+  animation: caret 1s steps(1) infinite;
+}
+
+@keyframes scan-sweep {
+  from {
+    transform: translate3d(0, -100%, 0);
+  }
+  to {
+    transform: translate3d(0, 400%, 0);
+  }
+}
+
+@utility animate-scan-sweep {
+  animation: scan-sweep 2.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-word,
+  .animate-fade-up {
+    animation: none;
+    opacity: 1;
+  }
+  .animate-scan-sweep,
+  .animate-caret {
+    animation: none;
+  }
+}
