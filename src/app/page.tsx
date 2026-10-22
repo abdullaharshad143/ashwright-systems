@@ -11,30 +11,33 @@ import { Services } from "@/components/sections/services"
 import { Testimonials } from "@/components/sections/testimonials"
 import { WhyUs } from "@/components/sections/why-us"
 import { siteConfig } from "@/lib/config"
-import { faqs } from "@/lib/faq"
+import { getSiteContent } from "@/lib/content"
 
-const jsonLd = [
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: siteConfig.name,
-    url: siteConfig.url,
-    logo: `${siteConfig.url}/brand/ashwright-mark.png`,
-    email: siteConfig.email,
-    description: siteConfig.description,
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqs.map((f) => ({
-      "@type": "Question",
-      name: f.q,
-      acceptedAnswer: { "@type": "Answer", text: f.a },
-    })),
-  },
-]
+export default async function HomePage() {
+  const { faqs, services, testimonials, founder, settings } = await getSiteContent()
+  const shownFaqs = faqs.filter((f) => f.visible)
 
-export default function HomePage() {
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: siteConfig.url,
+      logo: `${siteConfig.url}/brand/ashwright-mark.png`,
+      email: settings.email,
+      description: siteConfig.description,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: shownFaqs.map((f) => ({
+        "@type": "Question",
+        name: f.question,
+        acceptedAnswer: { "@type": "Answer", text: f.answer },
+      })),
+    },
+  ]
+
   return (
     <>
       <script
@@ -42,17 +45,17 @@ export default function HomePage() {
         // Escape "<" so content can never close the script tag.
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
-      <Hero />
+      <Hero turnaroundDays={settings.turnaroundDays} />
       <PlatformStrip />
       <Problem />
-      <Checks />
+      <Checks turnaroundDays={settings.turnaroundDays} />
       <ReportPreview />
-      <Services />
+      <Services services={services.filter((s) => s.visible)} />
       <Platforms />
-      <HowItWorks />
-      <WhyUs />
-      <Testimonials />
-      <Faq />
+      <HowItWorks turnaroundDays={settings.turnaroundDays} />
+      <WhyUs founder={founder} />
+      <Testimonials testimonials={testimonials.filter((t) => t.visible && t.permission)} />
+      <Faq faqs={shownFaqs} email={settings.email} />
       <FinalCta />
     </>
   )

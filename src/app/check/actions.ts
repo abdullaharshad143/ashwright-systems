@@ -4,6 +4,7 @@ import { randomUUID } from "node:crypto"
 import { headers } from "next/headers"
 import { after } from "next/server"
 import { siteConfig } from "@/lib/config"
+import { getSiteContent } from "@/lib/content"
 import { sendLeadEmails } from "@/lib/email"
 import { clientIpFrom, sendMetaEvent } from "@/lib/meta-capi"
 import {
@@ -67,9 +68,10 @@ export async function submitLead(input: LeadPayload): Promise<SubmitResult> {
     const { data, error } = await supabase.from("leads").insert(row).select("id").single()
     if (error || !data) {
       console.error("[lead] insert failed", error)
+      const { settings } = await getSiteContent()
       return {
         ok: false,
-        error: `We couldn't save your request. Please try again, or email us at ${siteConfig.email}.`,
+        error: `We couldn't save your request. Please try again, or email us at ${settings.email}.`,
       }
     }
     leadId = data.id as string

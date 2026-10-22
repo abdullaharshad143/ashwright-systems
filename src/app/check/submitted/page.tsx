@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { getSiteContent, turnaroundLabel } from "@/lib/content"
 import { Submitted } from "./submitted"
 
 export const metadata: Metadata = {
@@ -6,6 +7,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
-export default function SubmittedPage() {
-  return <Submitted />
+export default async function SubmittedPage() {
+  const { settings } = await getSiteContent()
+  return <Submitted turnaround={turnaroundLabel(settings.turnaroundDays)} />
 }

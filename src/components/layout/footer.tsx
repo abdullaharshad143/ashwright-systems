@@ -10,7 +10,7 @@ const links = [
   { href: "/terms", label: "Terms" },
 ]
 
-export function Footer() {
+export function Footer({ email }: { email: string }) {
   return (
     <footer className="border-t border-line">
       <div className="container-page flex flex-col gap-10 py-12 md:flex-row md:items-start md:justify-between">
@@ -19,10 +19,10 @@ export function Footer() {
           <p className="label-caps text-brand-gradient mt-5 w-fit text-[0.6875rem]">{siteConfig.slogan}</p>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{siteConfig.tagline}</p>
           <a
-            href={`mailto:${siteConfig.email}`}
+            href={`mailto:${email}`}
             className="mt-4 inline-block font-mono text-[0.8125rem] text-muted-foreground transition-colors hover:text-foreground"
           >
-            {siteConfig.email}
+            {email}
           </a>
         </div>
         <nav aria-label="Footer">

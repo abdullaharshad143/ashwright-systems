@@ -1,6 +1,5 @@
 "use client"
 
-import { siteConfig } from "@/lib/config"
 import { trackEvent } from "@/lib/tracking"
 
 export const CAL_NAMESPACE = "intro"
@@ -45,4 +44,5 @@ export function loadCal() {
   return ready
 }
 
-export const calPublicUrl = `https://cal.com/${siteConfig.cal.link}`
+/** The booking page itself, for links that work without the embed. */
+export const calPublicUrl = (calLink: string) => `https://cal.com/${calLink}`

@@ -1,6 +1,7 @@
 import { BookCall } from "@/components/cal/book-call"
 import { UrlForm } from "@/components/url-form"
 import { siteConfig } from "@/lib/config"
+import { turnaroundLabel } from "@/lib/content/schema"
 import { TestCard } from "./test-card"
 
 const headline = ["Your", "AI-built", "app", "works.", "Is", "it", "ready", "for", "real", "users?"]
@@ -17,7 +18,7 @@ function accentColor(j: number) {
   return `color-mix(in oklab, var(--coral), var(--orange) ${t}%)`
 }
 
-export function Hero() {
+export function Hero({ turnaroundDays }: { turnaroundDays: number }) {
   return (
     <section aria-labelledby="hero-title" className="relative overflow-hidden pt-28 pb-20 sm:pt-36 sm:pb-28">
       <div aria-hidden="true" className="bg-grid pointer-events-none absolute inset-0 -z-10" />
@@ -72,7 +73,7 @@ export function Hero() {
             <UrlForm />
             <p className="font-mono text-xs text-subtle-foreground">
               Free <span aria-hidden="true">·</span> Tested by hand <span aria-hidden="true">·</span> Report within{" "}
-              {siteConfig.check.turnaround}
+              {turnaroundLabel(turnaroundDays)}
             </p>
             <p className="mt-5 text-sm text-muted-foreground">
               Prefer to talk?{" "}

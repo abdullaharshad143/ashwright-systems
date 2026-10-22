@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { LegalPage } from "@/components/legal-page"
 import { siteConfig } from "@/lib/config"
+import { getSiteContent } from "@/lib/content"
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -9,8 +10,9 @@ export const metadata: Metadata = {
 }
 
 // Template policy. Have qualified counsel review it before launch.
-export default function PrivacyPage() {
-  const { name, email } = siteConfig
+export default async function PrivacyPage() {
+  const { name } = siteConfig
+  const { email } = (await getSiteContent()).settings
   const mail = <a href={`mailto:${email}`}>{email}</a>
   return (
     <LegalPage title="Privacy Policy">

@@ -2,21 +2,26 @@ import type { Metadata } from "next"
 import { Clock, EyeOff, PhoneCall, UserCheck } from "lucide-react"
 import { CheckForm } from "@/components/check/check-form"
 import { siteConfig } from "@/lib/config"
+import { getSiteContent, turnaroundLabel } from "@/lib/content"
 
-export const metadata: Metadata = {
-  title: "Free Production Readiness Check",
-  description: `A real engineer tests your AI-built website or app by hand and sends you a PDF report with screenshots of every issue. Free, within ${siteConfig.check.turnaround}.`,
-  alternates: { canonical: "/check" },
+export async function generateMetadata(): Promise<Metadata> {
+  const { settings } = await getSiteContent()
+  return {
+    title: "Free Production Readiness Check",
+    description: `A real engineer tests your AI-built website or app by hand and sends you a PDF report with screenshots of every issue. Free, within ${turnaroundLabel(settings.turnaroundDays)}.`,
+    alternates: { canonical: "/check" },
+  }
 }
 
-const assurances = [
-  { icon: UserCheck, title: "Tested by hand, not a scanner", body: "An engineer goes through your app on desktop and mobile, like your users do." },
-  { icon: Clock, title: `PDF report within ${siteConfig.check.turnaround}`, body: "Every issue with screenshots, steps to reproduce, and how to fix it." },
-  { icon: EyeOff, title: "We never store your app's data", body: "We use our own test accounts and never touch real users' data." },
-  { icon: PhoneCall, title: "No pressure", body: `A free ${siteConfig.cal.callLength} walkthrough if you want one. That's it.` },
-]
+export default async function CheckPage() {
+  const { settings } = await getSiteContent()
+  const assurances = [
+    { icon: UserCheck, title: "Tested by hand, not a scanner", body: "An engineer goes through your app on desktop and mobile, like your users do." },
+    { icon: Clock, title: `PDF report within ${turnaroundLabel(settings.turnaroundDays)}`, body: "Every issue with screenshots, steps to reproduce, and how to fix it." },
+    { icon: EyeOff, title: "We never store your app's data", body: "We use our own test accounts and never touch real users' data." },
+    { icon: PhoneCall, title: "No pressure", body: `A free ${siteConfig.cal.callLength} walkthrough if you want one. That's it.` },
+  ]
 
-export default function CheckPage() {
   return (
     <section className="relative pt-28 pb-24 sm:pt-36">
       <div aria-hidden="true" className="bg-grid pointer-events-none absolute inset-0 -z-10" />

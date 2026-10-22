@@ -2,11 +2,13 @@
 
 import Cal from "@calcom/embed-react"
 import { useEffect, useState } from "react"
+import { useSiteSettings } from "@/components/site-settings"
 import { siteConfig } from "@/lib/config"
 import { CAL_NAMESPACE, loadCal } from "./cal-api"
 
 export function CalInline({ name, email }: { name?: string; email?: string }) {
   const [mounted, setMounted] = useState(false)
+  const { calLink } = useSiteSettings()
 
   useEffect(() => {
     void loadCal().then(() => setMounted(true))
@@ -21,7 +23,7 @@ export function CalInline({ name, email }: { name?: string; email?: string }) {
       )}
       <Cal
         namespace={CAL_NAMESPACE}
-        calLink={siteConfig.cal.link}
+        calLink={calLink}
         calOrigin={siteConfig.cal.origin}
         style={{ width: "100%", height: "100%", minHeight: 640, overflow: "auto" }}
         config={{ layout: "month_view", theme: "dark", ...(name && { name }), ...(email && { email }) }}

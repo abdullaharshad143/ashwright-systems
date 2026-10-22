@@ -1,6 +1,7 @@
 import "server-only"
 import { Resend } from "resend"
 import { siteConfig } from "@/lib/config"
+import { getSiteContent, turnaroundLabel, type SiteSettings } from "@/lib/content"
 
 type ConfirmationInput = {
   name: string
@@ -8,14 +9,14 @@ type ConfirmationInput = {
   appUrl: string
 }
 
+type Copy = ConfirmationInput & { settings: SiteSettings }
+
 const escape = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!)
 
-function calUrl() {
-  return `https://cal.com/${siteConfig.cal.link}`
-}
+const calUrl = (settings: SiteSettings) => `https://cal.com/${settings.calLink}`
 
-function confirmationHtml({ name, appUrl }: ConfirmationInput) {
+function confirmationHtml({ name, appUrl, settings }: Copy) {
   const first = escape(name.split(" ")[0] ?? name)
   const url = escape(appUrl)
   return `<!doctype html>
@@ -32,14 +33,14 @@ function confirmationHtml({ name, appUrl }: ConfirmationInput) {
               <tr><td style="padding:12px 14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:#3a3f4a;">${url}</td></tr>
             </table>
             <p style="margin:0 0 8px;font-size:15px;line-height:1.6;color:#3a3f4a;"><strong style="color:#0a0a0a;">What happens next</strong></p>
-            <p style="margin:0 0 4px;font-size:15px;line-height:1.6;color:#3a3f4a;">1. You'll get a PDF report within ${siteConfig.check.turnaround}, with screenshots of every issue.</p>
+            <p style="margin:0 0 4px;font-size:15px;line-height:1.6;color:#3a3f4a;">1. You'll get a PDF report within ${turnaroundLabel(settings.turnaroundDays)}, with screenshots of every issue.</p>
             <p style="margin:0 0 4px;font-size:15px;line-height:1.6;color:#3a3f4a;">2. We walk you through it on a free ${siteConfig.cal.callLength} call.</p>
             <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#3a3f4a;">3. You decide what, if anything, to fix. No pressure.</p>
-            <a href="${calUrl()}" style="display:inline-block;background:#fb8629;color:#0a0a0a;text-decoration:none;font-size:14px;font-weight:600;padding:12px 18px;border-radius:8px;">Book your walkthrough call</a>
+            <a href="${calUrl(settings)}" style="display:inline-block;background:#fb8629;color:#0a0a0a;text-decoration:none;font-size:14px;font-weight:600;padding:12px 18px;border-radius:8px;">Book your walkthrough call</a>
             <p style="margin:24px 0 0;font-size:13px;line-height:1.6;color:#6b7280;">We test with our own test accounts. If your app is invite-only or needs a paid plan, we'll reply to ask for a test login. We never download or store your app's data.</p>
           </td></tr>
           <tr><td style="padding:20px 28px 28px;font-size:13px;color:#6b7280;border-top:1px solid #eef0f3;">
-            Reply to this email anytime. A real person reads it.<br/>${siteConfig.name} · ${siteConfig.email}
+            Reply to this email anytime. A real person reads it.<br/>${siteConfig.name} · ${settings.email}
           </td></tr>
         </table>
       </td></tr>
@@ -48,7 +49,7 @@ function confirmationHtml({ name, appUrl }: ConfirmationInput) {
 </html>`
 }
 
-function confirmationText({ name, appUrl }: ConfirmationInput) {
+function confirmationText({ name, appUrl, settings }: Copy) {
   const first = name.split(" ")[0] ?? name
   return `Hi ${first},
 
@@ -57,16 +58,16 @@ Thanks for sending over your app. An engineer will test it by hand, on desktop a
 App: ${appUrl}
 
 What happens next
-1. You'll get a PDF report within ${siteConfig.check.turnaround}, with screenshots of every issue.
+1. You'll get a PDF report within ${turnaroundLabel(settings.turnaroundDays)}, with screenshots of every issue.
 2. We walk you through it on a free ${siteConfig.cal.callLength} call.
 3. You decide what, if anything, to fix. No pressure.
 
-Book your walkthrough call: ${calUrl()}
+Book your walkthrough call: ${calUrl(settings)}
 
 We test with our own test accounts. If your app is invite-only or needs a paid plan, we'll reply to ask for a test login. We never download or store your app's data.
 
 Reply to this email anytime. A real person reads it.
-${siteConfig.name} · ${siteConfig.email}`
+${siteConfig.name} · ${settings.email}`
 }
 
 export async function sendLeadEmails(input: ConfirmationInput & { leadId: string; summary: string }) {
@@ -78,14 +79,16 @@ export async function sendLeadEmails(input: ConfirmationInput & { leadId: string
   }
 
   const resend = new Resend(apiKey)
+  const { settings } = await getSiteContent()
+  const copy = { ...input, settings }
   const sends = [
     resend.emails.send({
       from,
       to: input.email,
-      replyTo: siteConfig.email,
+      replyTo: settings.email,
       subject: "Your Production Readiness Check is in progress",
-      html: confirmationHtml(input),
-      text: confirmationText(input),
+      html: confirmationHtml(copy),
+      text: confirmationText(copy),
     }),
   ]
 

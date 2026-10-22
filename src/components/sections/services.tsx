@@ -3,21 +3,21 @@ import { BookCall } from "@/components/cal/book-call"
 import { RevealGroup, RevealItem } from "@/components/motion/reveal"
 import { SectionHeading } from "@/components/section-heading"
 import { ButtonArrow, buttonVariants } from "@/components/ui/button"
-import { services } from "@/lib/config"
+import type { Service } from "@/lib/content/schema"
 import { cn } from "@/lib/utils"
 
-export function Services() {
+export function Services({ services }: { services: Service[] }) {
   return (
     <section id="services" aria-labelledby="services-title" className="border-t border-line py-24 sm:py-32">
       <div className="container-page">
         <SectionHeading
           id="services-title"
           eyebrow="Services"
-          title="From check to launch."
-          description="Websites, web apps, and mobile apps. Every project gets a fixed quote and a clear timeline after a free call."
+          title="From check to launch, and beyond."
+          description="Fix what's broken, move to a stack you own, or add iOS and Android. Every project gets a fixed quote and a clear timeline after a free call."
         />
 
-        <RevealGroup className="mt-12 grid gap-4 lg:grid-cols-3 lg:items-stretch">
+        <RevealGroup className="mt-12 grid gap-4 md:grid-cols-2 md:items-stretch">
           {services.map((s) => (
             <RevealItem key={s.id} className="surface-card surface-card-hover flex flex-col p-6 sm:p-7">
               <div className="flex items-start justify-between gap-3">

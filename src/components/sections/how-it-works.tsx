@@ -5,12 +5,12 @@ import { useRef } from "react"
 import { Reveal } from "@/components/motion/reveal"
 import { SectionHeading } from "@/components/section-heading"
 
-const steps = [
+const stepsFor = (turnaroundDays: number) => [
   { title: "Tell us about your app", body: "Your URL and what your users do in it. It takes 2 minutes.", meta: "2 min" },
   {
     title: "We test it by hand",
     body: "An engineer signs up with a test account and goes through your key flows on desktop and mobile.",
-    meta: "≤ 3 days",
+    meta: `≤ ${turnaroundDays} day${turnaroundDays === 1 ? "" : "s"}`,
   },
   {
     title: "Get your PDF report",
@@ -24,7 +24,8 @@ const steps = [
   },
 ]
 
-export function HowItWorks() {
+export function HowItWorks({ turnaroundDays }: { turnaroundDays: number }) {
+  const steps = stepsFor(turnaroundDays)
   const ref = useRef<HTMLOListElement>(null)
   const reduce = useReducedMotion()
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 75%", "end 55%"] })

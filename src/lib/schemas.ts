@@ -34,6 +34,7 @@ export const stageOptions = [
 export const goalOptions = [
   { value: "security", label: "Fix security issues" },
   { value: "launch", label: "Launch to production" },
+  { value: "migrate", label: "Move off Lovable / Replit" },
   { value: "build", label: "Build new features" },
   { value: "app-stores", label: "Publish to app stores" },
   { value: "unsure", label: "Not sure yet" },

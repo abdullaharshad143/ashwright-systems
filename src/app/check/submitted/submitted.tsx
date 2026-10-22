@@ -5,7 +5,6 @@ import { useMemo, useSyncExternalStore } from "react"
 import { CalInline } from "@/components/cal/cal-inline"
 import { EASE_OUT } from "@/components/motion/ease"
 import { LEAD_STORAGE_KEY } from "@/lib/attribution"
-import { siteConfig } from "@/lib/config"
 
 type Lead = { name?: string; email?: string }
 
@@ -70,7 +69,7 @@ function SuccessMark() {
   )
 }
 
-export function Submitted() {
+export function Submitted({ turnaround }: { turnaround: string }) {
   const lead = useLead()
   const fade = (delay: number) => ({
     initial: { opacity: 0, y: 12 },
@@ -88,7 +87,7 @@ export function Submitted() {
             Your check is in progress.
           </m.h1>
           <m.p {...fade(0.6)} className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg" aria-live="polite">
-            An engineer will test your app by hand. You&apos;ll get your PDF report within {siteConfig.check.turnaround} at{" "}
+            An engineer will test your app by hand. You&apos;ll get your PDF report within {turnaround} at{" "}
             {lead?.email ? (
               <span className="font-mono text-[0.95em] text-foreground">{lead.email}</span>
             ) : (

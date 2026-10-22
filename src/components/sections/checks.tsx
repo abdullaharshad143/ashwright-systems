@@ -23,14 +23,14 @@ const checks = [
   { icon: Share2, title: "SEO & social sharing", detail: "Meta, OG, sitemap" },
 ]
 
-const facts = [
-  { value: 8, suffix: "", label: "areas tested by hand" },
-  { value: 3, suffix: " days", label: "to your PDF report" },
-  { value: 20, suffix: " min", label: "walkthrough call" },
-  { value: 0, prefix: "$", suffix: "", label: "cost to you" },
-]
+export function Checks({ turnaroundDays }: { turnaroundDays: number }) {
+  const facts = [
+    { value: 8, suffix: "", label: "areas tested by hand" },
+    { value: turnaroundDays, suffix: turnaroundDays === 1 ? " day" : " days", label: "to your PDF report" },
+    { value: 20, suffix: " min", label: "walkthrough call" },
+    { value: 0, prefix: "$", suffix: "", label: "cost to you" },
+  ]
 
-export function Checks() {
   return (
     <section id="what-we-check" aria-labelledby="checks-title" className="border-t border-line py-24 sm:py-32">
       <div className="container-page">

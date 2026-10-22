@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { LegalPage } from "@/components/legal-page"
 import { siteConfig } from "@/lib/config"
+import { getSiteContent } from "@/lib/content"
 
 export const metadata: Metadata = {
   title: "Terms of Service",
@@ -10,8 +11,9 @@ export const metadata: Metadata = {
 }
 
 // Template terms. Have qualified counsel review them before launch.
-export default function TermsPage() {
-  const { name, email, jurisdiction } = siteConfig
+export default async function TermsPage() {
+  const { name, jurisdiction } = siteConfig
+  const { email } = (await getSiteContent()).settings
   return (
     <LegalPage title="Terms of Service">
       <p>

@@ -4,8 +4,10 @@ import { Footer } from "@/components/layout/footer"
 import { Navbar } from "@/components/layout/navbar"
 import { MotionProvider } from "@/components/motion/motion-provider"
 import { Analytics } from "@/components/tracking/analytics"
+import { SiteSettingsProvider } from "@/components/site-settings"
 import { CookieBanner } from "@/components/tracking/cookie-banner"
 import { siteConfig } from "@/lib/config"
+import { getSiteContent } from "@/lib/content"
 import "./globals.css"
 
 const montserrat = Montserrat({ variable: "--font-montserrat", subsets: ["latin"] })
@@ -41,18 +43,21 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 }
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const { settings } = await getSiteContent()
   return (
     <html lang="en-US" className={`${montserrat.variable} ${plexMono.variable}`}>
       <body className="flex min-h-dvh flex-col">
-        <MotionProvider>
-          <Navbar />
-          <main id="main" className="flex-1">
-            {children}
-          </main>
-          <Footer />
-          <CookieBanner />
-        </MotionProvider>
+        <SiteSettingsProvider value={settings}>
+          <MotionProvider>
+            <Navbar />
+            <main id="main" className="flex-1">
+              {children}
+            </main>
+            <Footer email={settings.email} />
+            <CookieBanner />
+          </MotionProvider>
+        </SiteSettingsProvider>
         <Analytics />
       </body>
     </html>

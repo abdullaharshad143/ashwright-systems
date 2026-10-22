@@ -1,7 +1,7 @@
 "use client"
 
+import { useSiteSettings } from "@/components/site-settings"
 import { cn } from "@/lib/utils"
-import { siteConfig } from "@/lib/config"
 import { calPublicUrl, loadCal } from "./cal-api"
 
 type BookCallProps = Omit<React.ComponentProps<"a">, "href"> & {
@@ -13,9 +13,11 @@ type BookCallProps = Omit<React.ComponentProps<"a">, "href"> & {
  * (in a new tab) before hydration or if the embed fails to load.
  */
 export function BookCall({ className, children, prefill, onClick, ...props }: BookCallProps) {
+  const { calLink } = useSiteSettings()
+  const href = calPublicUrl(calLink)
   return (
     <a
-      href={calPublicUrl}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       className={cn("cursor-pointer", className)}
@@ -28,11 +30,11 @@ export function BookCall({ className, children, prefill, onClick, ...props }: Bo
         void loadCal()
           .then((cal) =>
             cal("modal", {
-              calLink: siteConfig.cal.link,
+              calLink,
               config: { layout: "month_view", theme: "dark", ...prefill },
             })
           )
-          .catch(() => window.open(calPublicUrl, "_blank", "noopener"))
+          .catch(() => window.open(href, "_blank", "noopener"))
       }}
       {...props}
     >
